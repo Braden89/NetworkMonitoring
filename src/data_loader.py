@@ -69,9 +69,10 @@ def main():
     parser.add_argument("--buffer-size", type=int, default=10000)
     parser.add_argument("--split", default="train")
     parser.add_argument("--inspect-only", action="store_true")
+    parser.add_argument("--revision", default=None, help="Pin a Hugging Face commit for reproducibility")
     args = parser.parse_args()
     try:
-        metadata = inspect_dataset()
+        metadata = inspect_dataset(revision=args.revision)
         print(json.dumps(metadata, indent=2))
         if not args.inspect_only:
             from src.quality import write_report

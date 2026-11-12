@@ -1,1 +1,1 @@
-"""Phase 1 dataset exploration tools."""
+"""Dataset exploration and leakage-aware preprocessing tools."""

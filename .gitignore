@@ -13,3 +13,8 @@ models/**
 *.log
 .pytest_cache/
 reports/*executed.ipynb
+
+# Editor and temporary artifacts
+*.tmp
+*.swp
+*~

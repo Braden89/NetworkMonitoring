@@ -1,6 +1,6 @@
 # Data quality summary
 
-Generated (UTC): 2026-11-12T01:21:19.770527+00:00
+Generated (UTC): 2026-11-12T04:07:46.159283+00:00
 
 ## Scope
 
@@ -9,32 +9,33 @@ Revision: `b33f3052398ffd63463ce3120fec2acbb68e2ff6`; split: `train`; seed: 42; 
 All quality statistics below describe only the examined sample. Buffered streaming is not a uniform global sample; file/time ordering can omit attack categories. No full-dataset quality claims are made.
 
 Records examined: 10000; feature columns (excluding label): 78.
-Label column: ` Label`; duplicate rows beyond first occurrence: 76.
+Label column: ` Label`; duplicate rows beyond first occurrence: 116.
 
 ## Observed attack categories and class distribution
 
 | Category | Count | Sample % |
 |---|---:|---:|
-| BENIGN | 10000 | 100.000 |
+| BENIGN | 9997 | 99.970 |
+| PortScan | 3 | 0.030 |
 
 ## Missing values
 
-Total: 1
+Total: 5
 
 ```json
 {
-  "Flow Bytes/s": 1
+  "Flow Bytes/s": 5
 }
 ```
 
 ## Infinite numerical values
 
-Total: 39
+Total: 31
 
 ```json
 {
-  "Flow Bytes/s": 19,
-  " Flow Packets/s": 20
+  "Flow Bytes/s": 13,
+  " Flow Packets/s": 18
 }
 ```
 
@@ -48,23 +49,23 @@ Total: 0
 
 ## Negative numerical values (review domain meaning)
 
-Total: 7567
+Total: 9523
 
 ```json
 {
-  " Flow IAT Min": 27,
-  " Fwd Header Length": 11,
-  " Bwd Header Length": 10,
-  " Fwd Header Length.1": 11,
-  "Init_Win_bytes_forward": 2752,
-  " Init_Win_bytes_backward": 4745,
-  " min_seg_size_forward": 11
+  " Flow IAT Min": 26,
+  " Fwd Header Length": 16,
+  " Bwd Header Length": 13,
+  " Fwd Header Length.1": 16,
+  "Init_Win_bytes_forward": 4075,
+  " Init_Win_bytes_backward": 5361,
+  " min_seg_size_forward": 16
 }
 ```
 
 ## Potential preprocessing problems
 
-Constant columns in sample: [' Bwd PSH Flags', ' Fwd URG Flags', ' Bwd URG Flags', ' CWE Flag Count', 'Fwd Avg Bytes/Bulk', ' Fwd Avg Packets/Bulk', ' Fwd Avg Bulk Rate', ' Bwd Avg Bytes/Bulk', ' Bwd Avg Packets/Bulk', 'Bwd Avg Bulk Rate', ' Label']
+Constant columns in sample: [' Bwd PSH Flags', ' Fwd URG Flags', ' Bwd URG Flags', ' CWE Flag Count', 'Fwd Avg Bytes/Bulk', ' Fwd Avg Packets/Bulk', ' Fwd Avg Bulk Rate', ' Bwd Avg Bytes/Bulk', ' Bwd Avg Packets/Bulk', 'Bwd Avg Bulk Rate']
 Column names with outer whitespace: [' Destination Port', ' Flow Duration', ' Total Fwd Packets', ' Total Backward Packets', ' Total Length of Bwd Packets', ' Fwd Packet Length Max', ' Fwd Packet Length Min', ' Fwd Packet Length Mean', ' Fwd Packet Length Std', ' Bwd Packet Length Min', ' Bwd Packet Length Mean', ' Bwd Packet Length Std', ' Flow Packets/s', ' Flow IAT Mean', ' Flow IAT Std', ' Flow IAT Max', ' Flow IAT Min', ' Fwd IAT Mean', ' Fwd IAT Std', ' Fwd IAT Max', ' Fwd IAT Min', ' Bwd IAT Mean', ' Bwd IAT Std', ' Bwd IAT Max', ' Bwd IAT Min', ' Bwd PSH Flags', ' Fwd URG Flags', ' Bwd URG Flags', ' Fwd Header Length', ' Bwd Header Length', ' Bwd Packets/s', ' Min Packet Length', ' Max Packet Length', ' Packet Length Mean', ' Packet Length Std', ' Packet Length Variance', ' SYN Flag Count', ' RST Flag Count', ' PSH Flag Count', ' ACK Flag Count', ' URG Flag Count', ' CWE Flag Count', ' ECE Flag Count', ' Down/Up Ratio', ' Average Packet Size', ' Avg Fwd Segment Size', ' Avg Bwd Segment Size', ' Fwd Header Length.1', ' Fwd Avg Packets/Bulk', ' Fwd Avg Bulk Rate', ' Bwd Avg Bytes/Bulk', ' Bwd Avg Packets/Bulk', ' Subflow Fwd Bytes', ' Subflow Bwd Packets', ' Subflow Bwd Bytes', ' Init_Win_bytes_backward', ' act_data_pkt_fwd', ' min_seg_size_forward', ' Active Std', ' Active Max', ' Active Min', ' Idle Std', ' Idle Max', ' Idle Min', ' Label']
 Review missing/infinite values, numeric parsing, negative sentinel values, class imbalance, duplicated flows, and redundant features before training. Constant columns may vary outside this sample. Duplicate counting uses all columns including the label; conflicting labels require separate investigation. Preserve temporal/file provenance when designing future splits to prevent leakage. No rows or columns were cleaned here.
 
@@ -150,7 +151,7 @@ Review missing/infinite values, numeric parsing, negative sentinel values, class
   " Idle Std": "float64",
   " Idle Max": "int64",
   " Idle Min": "int64",
-  " Label": "object"
+  " Label": "str"
 }
 ```
 
