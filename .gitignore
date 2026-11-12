@@ -1,0 +1,15 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.env
+data/**
+!data/raw/
+!data/processed/
+!data/**/.gitkeep
+models/**
+!models/.gitkeep
+*.log
+.pytest_cache/
+reports/*executed.ipynb
