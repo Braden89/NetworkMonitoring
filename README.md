@@ -1,6 +1,6 @@
 # Real-Time Network Intrusion Detection Using Machine Learning
 
-Graduate ML project: explore labeled network flows, then develop intrusion classification and eventually a real-time monitoring application over five weeks. **Phases 1 and 2 plus the Phase 3 binary baseline are implemented.** Dataset exploration, reusable preprocessing, and binary classification are available. Multiclass training, packet capture, backend, and dashboard remain future work.
+Graduate ML project: explore labeled network flows, then develop intrusion classification and eventually a real-time monitoring application over five weeks. **Phases 1–3 are implemented.** Dataset exploration, reusable preprocessing, and binary/multiclass baselines are available. Packet capture, backend, and dashboard remain future work.
 
 Dataset: [muzom/CIC-IDS2017](https://huggingface.co/datasets/muzom/CIC-IDS2017). The source repository contains eight CSV files. The loader inspects repository sizes, revision, configuration, splits, and feature metadata before streaming records through Hugging Face `datasets`. Dataset usage is subject to the source license; review it before redistribution.
 
@@ -50,7 +50,7 @@ Cache files live in ignored `data/raw/hf_cache/`; large data, virtual environmen
 - `data/raw/`, `data/processed/`, `models/`: reserved artifact directories.
 - `reports/data_quality_summary.md`: observed data quality and provenance.
 
-Phase 2 now handles missing/infinite values, label encoding, duplicate-aware splits, and reusable preprocessing. Future phases require approval: Phase 3 compares Logistic Regression and Random Forest with binary/multiclass metrics; Phase 4 develops compatible flow extraction and live/replay classification; Phase 5 adds FastAPI, an optional dashboard, and a final evaluation/report. Future module files are deferred until their phase begins.
+Phase 2 now handles missing/infinite values, label encoding, duplicate-aware splits, and reusable preprocessing. Phase 3 now compares Logistic Regression and Random Forest with binary/multiclass metrics. Future phases require approval: Phase 4 develops compatible flow extraction and live/replay classification; Phase 5 adds FastAPI, an optional dashboard, and a final evaluation/report. Future module files are deferred until their phase begins.
 
 ## Dataset suitability analysis
 
@@ -143,3 +143,30 @@ python -m src.predict data/processed/phase2/validation_raw.parquet --output data
 Prediction output is BENIGN or ATTACK plus an uncalibrated `attack_score`; it does not identify individual attacks. Only load trusted local joblib artifacts. The input must contain compatible flow measurements, not raw packets. These results describe an attack-heavy, class-capped development benchmark, not production precision or live-network performance. Do not tune against the recorded test score.
 
 Model references: [Logistic Regression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) and [Random Forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html).
+
+## Phase 3: multiclass baseline
+
+```bash
+source ~/.venvs/networkmonitoring/bin/activate
+python -m src.train_multiclass
+jupyter lab notebooks/04_multiclass_baseline.ipynb
+```
+
+This compares multinomial Logistic Regression and Random Forest on the same 15 encoded labels and Phase 2 splits. Both use balanced class weights. Selection uses validation macro F1 over the full saved class list, with lower benign false-positive rate as the tie-breaker. Nonconverged candidates are excluded. The winner is not refitted on validation. Only that winner receives a test evaluation. This is the **same benchmark test split already used for binary classification**, not a fresh independent test.
+
+Repeated runs verify the seed, source-artifact hashes, and selected-model hash before returning saved results. They do not retrain or rescore test. The notebook displays those results and demonstrates inference on validation rows.
+
+Outputs:
+
+- `reports/phase3_multiclass_baseline.md`: comparison, per-class precision/recall/F1/support, major confusions, and limitations.
+- `reports/multiclass_baseline_metrics.json`: machine-readable results, class order, parameters, warnings, timings, and hashes.
+- `reports/multiclass_test_confusion_matrix.png`: count and row-normalized confusion matrices.
+- `models/multiclass_detector.joblib`: complete preprocessing/classifier bundle and original label mapping (ignored by Git).
+
+Predict attack labels from compatible raw flow measurements:
+
+```bash
+python -m src.predict data/processed/phase2/validation_raw.parquet --model models/multiclass_detector.joblib --output data/processed/phase3/multiclass_validation_predictions.csv
+```
+
+Multiclass output contains `prediction` and an uncalibrated `predicted_class_score`. The existing binary model and binary prediction interface remain available. Class-capped sampling changes prevalence; residual host/session/time similarity and tiny rare-class holdouts limit conclusions. Use validation, not the test report, for any future tuning. PCAP replay and compatible flow-feature extraction are the next separate project phase.

@@ -18,8 +18,13 @@ def predict_frame(frame, artifact):
     features = frame.loc[:, required]
     pipeline = artifact['pipeline']
     ids = pipeline.predict(features)
-    return pd.DataFrame({'prediction': [artifact['label_mapping'][int(i)] for i in ids],
-                         'attack_score': pipeline.predict_proba(features)[:, 1]}, index=frame.index)
+    result = pd.DataFrame({'prediction': [artifact['label_mapping'][int(i)] for i in ids]}, index=frame.index)
+    probability = pipeline.predict_proba(features)
+    if artifact.get('task') == 'multiclass':
+        result['predicted_class_score'] = probability.max(axis=1)
+    else:
+        result['attack_score'] = probability[:, 1]
+    return result
 
 
 def main():
